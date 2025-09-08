@@ -1,0 +1,20 @@
+{
+  "title": "MediTrack Dashboard",
+  "panels": [
+    {
+      "type": "graph",
+      "title": "Appointments",
+      "id": 1
+    },
+    {
+      "type": "graph",
+      "title": "Billing events",
+      "id": 2
+    },
+    {
+      "type": "graph",
+      "title": "Inventory alerts",
+      "id": 3
+    }
+  ]
+}

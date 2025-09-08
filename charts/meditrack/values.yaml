@@ -1,0 +1,34 @@
+{
+  "image": {
+    "repository": "meditrack",
+    "tag": "latest",
+    "pullPolicy": "IfNotPresent"
+  },
+  "replicaCount": 1,
+  "services": {
+    "user-service": {
+      "port": 8092,
+      "replicas": 1
+    },
+    "appointment-service": {
+      "port": 8093,
+      "replicas": 1
+    },
+    "inventory-service": {
+      "port": 8094,
+      "replicas": 1
+    },
+    "billing-service": {
+      "port": 8095,
+      "replicas": 1
+    },
+    "auth-service": {
+      "port": 8096,
+      "replicas": 1
+    },
+    "notification-service": {
+      "port": 8097,
+      "replicas": 1
+    }
+  }
+}
