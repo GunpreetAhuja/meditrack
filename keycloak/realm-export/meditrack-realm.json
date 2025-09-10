@@ -1,0 +1,6 @@
+{
+  "realm": "meditrack",
+  "enabled": true,
+  "roles": {"realm": ["PATIENT","DOCTOR","ADMIN"]}
+  /* Add clients and users via admin console or extend this export with users and client config */
+}
