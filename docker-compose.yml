@@ -1,5 +1,13 @@
 version: '3.8'
 services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1.1
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
   activemq:
     image: apache/activemq-classic:5.18.3
     ports:
@@ -14,99 +22,94 @@ services:
     ports:
       - "5432:5432"
 
-  user-service:
-    build: ./user-service
-    ports:
-      - "8092:8092"
-    environment:
-      ACTIVEMQ_URL: tcp://activemq:61616
-      ACTIVEMQ_USER: admin
-      ACTIVEMQ_PASSWORD: admin
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/meditrackdb
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: password
-    depends_on:
-      - activemq
-      - postgres
+user-service:
+  build: ./user-service
+  ports:
+    - "8092:8092"
+  environment:
+    SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/meditrackdb
+    SPRING_DATASOURCE_USERNAME: postgres
+    SPRING_DATASOURCE_PASSWORD: password
+    ACTIVEMQ_URL: tcp://activemq:61616
+    ACTIVEMQ_USER: admin
+    ACTIVEMQ_PASSWORD: admin
+    KEYCLOAK_ISSUER_URI: http://keycloak/realms/meditrack
+  depends_on:
+    - activemq
+    - postgres
+    - keycloak
 
-  appointment-service:
-    build: ./appointment-service
-    ports:
-      - "8093:8093"
-    environment:
-      ACTIVEMQ_URL: tcp://activemq:61616
-      ACTIVEMQ_USER: admin
-      ACTIVEMQ_PASSWORD: admin
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/meditrackdb
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: password
-    depends_on:
-      - activemq
-      - postgres
+appointment-service:
+  build: ./appointment-service
+  ports:
+    - "8093:8093"
+  environment:
+    SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/meditrackdb
+    SPRING_DATASOURCE_USERNAME: postgres
+    SPRING_DATASOURCE_PASSWORD: password
+    ACTIVEMQ_URL: tcp://activemq:61616
+    ACTIVEMQ_USER: admin
+    ACTIVEMQ_PASSWORD: admin
+    KEYCLOAK_ISSUER_URI: http://keycloak/realms/meditrack
+  depends_on:
+    - activemq
+    - postgres
+    - keycloak
 
-  inventory-service:
-    build: ./inventory-service
-    ports:
-      - "8094:8094"
-    environment:
-      ACTIVEMQ_URL: tcp://activemq:61616
-      ACTIVEMQ_USER: admin
-      ACTIVEMQ_PASSWORD: admin
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/meditrackdb
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: password
-    depends_on:
-      - activemq
-      - postgres
+inventory-service:
+  build: ./inventory-service
+  ports:
+    - "8094:8094"
+  environment:
+    SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/meditrackdb
+    SPRING_DATASOURCE_USERNAME: postgres
+    SPRING_DATASOURCE_PASSWORD: password
+    ACTIVEMQ_URL: tcp://activemq:61616
+    ACTIVEMQ_USER: admin
+    ACTIVEMQ_PASSWORD: admin
+    KEYCLOAK_ISSUER_URI: http://keycloak/realms/meditrack
+  depends_on:
+    - activemq
+    - postgres
+    - keycloak
 
-  billing-service:
-    build: ./billing-service
-    ports:
-      - "8095:8095"
-    environment:
-      ACTIVEMQ_URL: tcp://activemq:61616
-      ACTIVEMQ_USER: admin
-      ACTIVEMQ_PASSWORD: admin
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/meditrackdb
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: password
-    depends_on:
-      - activemq
-      - postgres
+billing-service:
+  build: ./billing-service
+  ports:
+    - "8095:8095"
+  environment:
+    SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/meditrackdb
+    SPRING_DATASOURCE_USERNAME: postgres
+    SPRING_DATASOURCE_PASSWORD: password
+    ACTIVEMQ_URL: tcp://activemq:61616
+    ACTIVEMQ_USER: admin
+    ACTIVEMQ_PASSWORD: admin
+    KEYCLOAK_ISSUER_URI: http://keycloak/realms/meditrack
+  depends_on:
+    - activemq
+    - postgres
+    - keycloak
 
-  auth-service:
-    build: ./auth-service
-    ports:
-      - "8096:8096"
-    environment:
-      ACTIVEMQ_URL: tcp://activemq:61616
-      ACTIVEMQ_USER: admin
-      ACTIVEMQ_PASSWORD: admin
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/meditrackdb
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: password
-    depends_on:
-      - activemq
-      - postgres
-
-  notification-service:
-    build: ./notification-service
-    ports:
-      - "8097:8097"
-    environment:
-      ACTIVEMQ_URL: tcp://activemq:61616
-      ACTIVEMQ_USER: admin
-      ACTIVEMQ_PASSWORD: admin
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/meditrackdb
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: password
-    depends_on:
-      - activemq
-      - postgres
+notification-service:
+  build: ./notification-service
+  ports:
+    - "8097:8097"
+  environment:
+    SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/meditrackdb
+    SPRING_DATASOURCE_USERNAME: postgres
+    SPRING_DATASOURCE_PASSWORD: password
+    ACTIVEMQ_URL: tcp://activemq:61616
+    ACTIVEMQ_USER: admin
+    ACTIVEMQ_PASSWORD: admin
+    KEYCLOAK_ISSUER_URI: http://keycloak/realms/meditrack
+  depends_on:
+    - activemq
+    - postgres
+    - keycloak
 
   dashboard:
     build: ./dashboard
     ports:
       - "3000:80"
     depends_on:
-      - auth-service
+      - keycloak
