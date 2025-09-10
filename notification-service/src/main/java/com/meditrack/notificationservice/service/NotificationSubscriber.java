@@ -9,6 +9,5 @@ public class NotificationSubscriber {
     @JmsListener(destination = "meditrack.notifications", containerFactory = "topicListenerFactory")
     public void onNotification(String msg) {
         System.out.println("🔔 NotificationService received: " + msg);
-        // Integrate with email/SMS providers in production.
     }
 }
