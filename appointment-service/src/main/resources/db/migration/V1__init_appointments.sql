@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS mt_appointments (id SERIAL PRIMARY KEY, patient_id INTEGER, doctor_id INTEGER, time TIMESTAMP, status VARCHAR(50));
