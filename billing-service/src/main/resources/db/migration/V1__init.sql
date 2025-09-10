@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS mt_bills (
+  id SERIAL PRIMARY KEY,
+  appointment_id INTEGER,
+  amount NUMERIC,
+  status VARCHAR(50)
+);

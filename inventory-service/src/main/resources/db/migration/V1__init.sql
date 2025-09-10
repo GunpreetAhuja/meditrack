@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS mt_inventory (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(200),
+  qty INTEGER
+);

@@ -1,5 +1,7 @@
 package com.meditrack.userservice.controller;
 
+import com.meditrack.userservice.model.User;
+import com.meditrack.userservice.repo.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,49 +13,31 @@ import java.util.*;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private static Map<Long, Map<String, Object>> store = new HashMap<>();
-    private static long seq = 1;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    static {
-        Map<String, Object> u = new HashMap<>();
-        u.put("id", seq);
-        u.put("username", "alice");
-        u.put("password", "$2a$10$u1qQZ0r6yZ0pQJ9oYzdP9eZx1fJq2G1y8d3sKQ8mZ6Y8eFh1qOa2u"); // bcrypt("password")
-        u.put("roles", Arrays.asList("PATIENT"));
-        store.put(seq, u);
-        seq++;
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @GetMapping
-    public Collection<Map<String, Object>> list() { return store.values(); }
+    public List<User> list() { return userRepository.findAll(); }
 
     @PostMapping
-    public Map<String, Object> create(@RequestBody Map<String, Object> body) {
-        long id = seq++;
-        if (body.containsKey("password")) {
-            String raw = body.get("password").toString();
-            body.put("password", passwordEncoder.encode(raw));
+    public User create(@RequestBody User u) {
+        if (u.getPassword() != null) {
+            u.setPassword(passwordEncoder.encode(u.getPassword()));
         }
-        body.put("id", id);
-        store.put(id, body);
-        return body;
+        return userRepository.save(u);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> get(@PathVariable Long id) {
-        Map<String, Object> u = store.get(id);
-        if (u == null) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(u);
+    public ResponseEntity<User> get(@PathVariable Long id) {
+        return userRepository.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/by-username/{username}")
-    public ResponseEntity<Map<String, Object>> getByUsername(@PathVariable String username) {
-        for (Map<String, Object> u : store.values()) {
-            if (username.equals(u.get("username"))) {
-                return ResponseEntity.ok(u);
-            }
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<User> getByUsername(@PathVariable String username) {
+        return userRepository.findByUsername(username).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 }
