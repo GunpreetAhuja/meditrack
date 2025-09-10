@@ -1,0 +1,5 @@
+apiVersion: v2
+name: meditrack-monitoring
+description: Prometheus & Grafana for MediTrack
+version: 0.1.0
+appVersion: "1.0"

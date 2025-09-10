@@ -7,37 +7,30 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final UserRepository repo;
+    private final PasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserRepository repo) { this.repo = repo; }
+
+    @GetMapping public List<User> list() { return repo.findAll(); }
+
+    @PostMapping public User create(@RequestBody User u) {
+        if (u.getPassword() != null) u.setPassword(encoder.encode(u.getPassword()));
+        return repo.save(u);
     }
 
-    @GetMapping
-    public List<User> list() { return userRepository.findAll(); }
-
-    @PostMapping
-    public User create(@RequestBody User u) {
-        if (u.getPassword() != null) {
-            u.setPassword(passwordEncoder.encode(u.getPassword()));
-        }
-        return userRepository.save(u);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<User> get(@PathVariable Long id) {
-        return userRepository.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{id}") public ResponseEntity<User> get(@PathVariable Long id) {
+        return repo.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/by-username/{username}")
     public ResponseEntity<User> getByUsername(@PathVariable String username) {
-        return userRepository.findByUsername(username).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return repo.findByUsername(username).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 }

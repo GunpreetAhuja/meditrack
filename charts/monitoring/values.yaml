@@ -1,0 +1,10 @@
+{
+  "prometheus": {
+    "replicaCount": 1,
+    "image": "prom/prometheus:2.47.0"
+  },
+  "grafana": {
+    "replicaCount": 1,
+    "image": "grafana/grafana:9.5.7"
+  }
+}

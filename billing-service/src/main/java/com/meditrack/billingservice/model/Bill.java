@@ -10,7 +10,6 @@ public class Bill {
     private Long appointmentId;
     private Double amount;
     private String status;
-    // getters/setters
     public Long getId(){return id;} public void setId(Long id){this.id=id;}
     public Long getAppointmentId(){return appointmentId;} public void setAppointmentId(Long a){this.appointmentId=a;}
     public Double getAmount(){return amount;} public void setAmount(Double amt){this.amount=amt;}
