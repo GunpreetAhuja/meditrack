@@ -1,0 +1,1 @@
+describe('Book appointment flow', ()=>{ it('loads home page', ()=>{ cy.visit('/'); cy.contains('MediTrack'); }); });
